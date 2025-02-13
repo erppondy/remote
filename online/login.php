@@ -10,13 +10,13 @@ header('Content-Type: application/json');
 // require_once './extra.php';
 $login_status = null;
 $userID = null;
-$dbname = 'odoo_test';
-$userName = null;
-$userPassword = null;
+$dbname = 'erp_prod';
+$userName = 'boss';
+$userPassword = 'boss';
 
 
-$privateURL = "http://10.184.51.70:8069";
-$publicURL = "http://10.184.51.70:8069";
+$privateURL = "http://192.168.0.139:80";
+$publicURL = "http://192.168.0.139:80";
 
 // mention local or public url
 // $url = $privateURL;
@@ -55,14 +55,14 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" || $_SERVER['REQUEST_METHOD'] == 'GET')
     if (isset($entityBody->dbname)) {
         $dbname = $entityBody->dbname;
     } else {
-        $dbname = 'odoo_test';
+        $dbname = 'erp_prod';
     }
 
     $common = ripcord::client($url . '/xmlrpc/2/common');
 
     // echo "13";
 
-    $userID = $common->authenticate('odoo_test', $userName, $userPassword, array());
+    $userID = $common->authenticate('erp_prod', $userName, $userPassword, array());
     error_log("Login User ID: $userID, User Name: $userName");
 
     if (empty($userID) || !isset($userID) || $userID == 0 || $userID == false) {
@@ -186,13 +186,13 @@ header('Content-Type: application/json');
 // require_once './extra.php';
 $login_status = null;
 $userID = null;
-$dbname = 'odoo_test';
+$dbname = 'erp_prod';
 $userName = null;
 $userPassword = null;
 
 
-$privateURL = "http://10.184.51.70:8069";
-$publicURL = "http://10.184.51.70:8069";
+$privateURL = "http://10.0.1.5:8069";
+$publicURL = "http://10.0.1.5:8069";
 
 // mention local or public url
 // $url = $privateURL;
@@ -218,27 +218,29 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" || $_SERVER['REQUEST_METHOD'] == 'GET')
         $userPassword = $entityBody->password;
         $udise = $entityBody->udise;  // Get the udise value
         $login_type = $entityBody->login_type;
+        echo json_encode(array("message" => "User ok"));
     } else {
         echo json_encode(array("message" => "Missing user, password, or udise"));
         exit;
     }
 
-    // Check for database name, if not present, default to 'odoo_test'
+    // Check for database name, if not present, default to 'erp_prod'
     if (isset($entityBody->dbname)) {
+        echo json_encode(array("message" => "Db ok"));
         $dbname = $entityBody->dbname;
     } else {
-        $dbname = 'odoo_test';
+        $dbname = 'erp_prod';
     }
-
+    echo json_encode(array("message" => "Test"));
     $common = ripcord::client($url . '/xmlrpc/2/common');
-
+    echo json_encode(array("message" => "Test"));
     $context = array(
         'login_type' => 'school',
         'udise' => $udise,  // Pass the UDISE code here
     );
     
     $userID = $common->authenticate($dbname, $userName, $userPassword, $context);
-
+    echo json_encode(array("message" => "UserID: $userID"));
     error_log("Login User ID: $userID, User Name: $userName");
 
     if (empty($userID) || !isset($userID) || $userID == 0 || $userID == false) {
@@ -248,9 +250,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" || $_SERVER['REQUEST_METHOD'] == 'GET')
             'login_status' => 0,
             'dbname' => $dbname
         );
+        
         echo json_encode($arr);
     } else {
-        
+        echo json_encode(array("message" => "Credentials ok"));
         $models = ripcord::client("$url/xmlrpc/2/object");
         // sleep(1);
         
@@ -285,6 +288,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" || $_SERVER['REQUEST_METHOD'] == 'GET')
                 'schoolId' => $record[0]['id'],
                 'isOnline' => 1
             );
+            echo json_encode(array("message" => "Headmaster"));
             echo json_encode($arr);
         } else {
             /// is not headmaster
@@ -312,8 +316,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" || $_SERVER['REQUEST_METHOD'] == 'GET')
             // Debugging output to inspect the structure of $school
             //error_log('School Data: ' . print_r($school, true));
             if (is_array($school)) {
+                echo json_encode(array("message" => "School array"));
                 error_log("First element: " . print_r($school[0], true));
             } else {
+                echo json_encode(array("message" => "School not Array"));
                 error_log("School is not an array: " . print_r($school, true));
             }
 
@@ -330,7 +336,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" || $_SERVER['REQUEST_METHOD'] == 'GET')
                 // Handle the case where $school is empty or not an array
                 $schoolId = null; // or handle appropriately
             }
-            
+            echo json_encode(array("message" => "School"));
             echo json_encode(
                 array(
                     'user' => $entityBody->user,
@@ -344,8 +350,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" || $_SERVER['REQUEST_METHOD'] == 'GET')
                 )
             );
         }
+
     }
 } else {
+    echo json_encode(array("message" => "Errror"));
     echo json_encode(array(
         "message" => "failed", "code" => "not post request", 'j' => $_SERVER['REQUEST_METHOD']
     ));

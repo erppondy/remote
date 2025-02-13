@@ -1,7 +1,7 @@
 <?php
 
-$privateURL = "http://10.184.51.70:8069";
-$publicURL = "http://10.184.51.70:8069";
+$privateURL = "http://10.0.1.5:8069";
+$publicURL = "http://10.0.1.5:8069";
 $url = $publicURL;
 
 // $url = $privateURL;
@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     if (isset($_GET['dbname'])) {
         $dbname = $_GET['dbname'];
     } else {
-        $dbname = 'odoo_test';
+        $dbname = 'erp_prod';
     }
     if (isset($_GET['udise'])) {
         $udise = $_GET['udise'];  // Capture udise value if provided
@@ -66,6 +66,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         $teacher_id = $teachers[0]['id'];
         $teacher_name = $teachers[0]['name'];
 
+        // $classes = $models->execute_kw(
+        //     $dbname,
+        //     $uid,
+        //     $password,
+        //     'school.standard',
+        //     'search_read',
+        //     array(
+        //         array(
+        //             '|', '|',
+        //             array('user_id.name', '=', $teacher_name),
+        //             array('sec_user_id.name', '=', $teacher_name),
+        //             array('ter_user_id.name', '=', $teacher_name),
+        //         ),
+        //     ),
+        //     array('fields' => array('name', 'standard_id', 'medium_id', 'division_id'))
+        // );
+        //error_log("Fetch Class2: " . print_r($classes, true));
+        // if (
+        //     !isset($classes['faultString'])
+        // ) {
+        //     $response = array(
+        //         // "teacher" => $teachers,
+        //         "classes" => $classes,
+        //     );
+        // } else {
+        //     // 120AB
+        //     $response = array(
+        //         'val' => 'error',
+        //         'error' => $classes,
+
+        //     );
+        // }
         $classes = $models->execute_kw(
             $dbname,
             $uid,
@@ -80,25 +112,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                     array('ter_user_id.name', '=', $teacher_name),
                 ),
             ),
-            array('fields' => array('name', 'standard_id', 'medium_id', 'division_id'))
+            array('fields' => array('name', 'standard_id', 'medium_id', 'division_id', 'user_id', 'sec_user_id', 'ter_user_id'))
         );
-        //error_log("Fetch Class2: " . print_r($classes, true));
+        $formatted_classes = [];
 
-        if (
-            !isset($classes['faultString'])
-        ) {
+        foreach ($classes as $class) {
+            $role = 'Unknown';
+
+            if (!empty($class['user_id']) && $class['user_id'][1] == $teacher_name) {
+                $role = 'Class Teacher';
+            } elseif (!empty($class['sec_user_id']) && $class['sec_user_id'][1] == $teacher_name) {
+                $role = 'Secondary Teacher';
+            } elseif (!empty($class['ter_user_id']) && $class['ter_user_id'][1] == $teacher_name) {
+                $role = 'Tertiary Teacher';
+            }
+
+            $formatted_classes[] = array_merge($class, ['role' => $role]);
+        }
+
+        if (!isset($classes['faultString'])) {
             $response = array(
-                // "teacher" => $teachers,
-                "classes" => $classes,
+                "classes" => $formatted_classes,
             );
         } else {
-            // 120AB
             $response = array(
                 'val' => 'error',
                 'error' => $classes,
-
             );
         }
+        
+        
         echo json_encode($response);
     }else{
         echo json_encode(array(

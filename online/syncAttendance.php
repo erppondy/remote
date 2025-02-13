@@ -1,7 +1,7 @@
 <?php
 
-$privateURL = "http://10.184.51.70:8069";
-$publicURL = "http://10.184.51.70:8069";
+$privateURL = "http://10.0.1.5:8069";
+$publicURL = "http://10.0.1.5:8069";
 
 // $url = $privateURL;
 $url = $publicURL;
@@ -31,15 +31,15 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     if (isset($entityBody['dbname'])) {
         $dbname = $entityBody['dbname'];
     } else {
-        $dbname = 'odoo_test';
+        $dbname = 'erp_prod';
     }
     if (isset($entityBody['udise'])) {
-        $udise = $entityBody['udise'];  // Capture udise value if provided
+        $udise = $entityBody['udise'];
     }
 
     $context = array(
         'login_type' => 'school',
-        'udise' => $udise,  // Pass the UDISE code here
+        'udise' => $udise,
     );
 
     if (isset($entityBody['sync'])) {

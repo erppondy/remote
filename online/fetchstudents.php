@@ -1,7 +1,7 @@
 <?php
 
-$privateURL = "http://10.184.51.70:8069";
-$publicURL = "http://10.184.51.70:8069";
+$privateURL = "http://10.0.1.5:8069";
+$publicURL = "http://10.0.1.5:8069";
 
 $url = $publicURL;
 
@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     if (isset($_GET['dbname'])) {
         $dbname = $_GET['dbname'];
     } else {
-        $dbname = 'odoo_test';
+        $dbname = 'erp_prod';
     }
     if (isset($_GET['udise'])) {
         $udise = $_GET['udise'];  // Capture udise value if provided
@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                     array('state', '=', 'done'),
                 ),
             ),
-            array("fields" => array('student_name','name', 'middle', 'last','roll_no', 'standard_id', 'photo')),
+            array("fields" => array('student_name','roll_no', 'standard_id')),
             // array()
         );
 

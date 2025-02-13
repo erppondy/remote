@@ -1,10 +1,10 @@
 <?php
 
-$dbname = 'odoo_test';
+$dbname = 'erp_prod';
 $password = '123456';
 $user = 'bassam22mji@gmail.com';
-$privateURL = "http://10.184.51.70:8070";
-$publicURL = "http://10.184.51.70:8070";
+$privateURL = "http://10.0.1.5:8069";
+$publicURL = "http://10.0.1.5:8069";
 
 // mention local or public url
 // $url = $privateURL;
