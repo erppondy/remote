@@ -1,7 +1,7 @@
 <?php
 
-$privateURL = "http://10.184.51.70:8069";
-$publicURL = "http://10.184.51.70:8069";
+$privateURL = "http://10.0.1.5:8069";
+$publicURL = "http://10.0.1.5:8069";
 
 $url = $publicURL;
 
@@ -59,7 +59,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                     array('employee_id.user_id.id', '=', $uid),
                 ),
             ),
-            array('fields' => array('name', 'school_id'))
+            array('fields' => array('name', 'school_id', 'employee_id',
+                    'teacher_code', 'user_id', "photo"))
 
         );
 
@@ -72,11 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             !isset($teachers['faultString'])
         ) {
             $response = array(
-                "teacher" => array(
-                    "teacher_id" => $teacher_id,
-                    "teacher_name" => $teacher_name,
-                    'userID'=> $uid,
-                ),
+                "teacher" => $teachers,
             );
         } else {
             // 120AB

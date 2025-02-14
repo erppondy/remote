@@ -1,7 +1,7 @@
 <?php
 
-$privateURL = "http://10.184.51.70:8069";
-$publicURL = "http://10.184.51.70:8069";
+$privateURL = "http://10.0.1.5:8069";
+$publicURL = "http://10.0.1.5:8069";
 
 $url = $publicURL;
 
